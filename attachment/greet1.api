@@ -1,0 +1,73 @@
+/**
+  * 整部分语法规则设计基于Go 1.20与goctl 1.5.2 windows_x64，务必不要将Java的语法规则带入到该文件的语法中，
+  * Java代码统一使用UTF-8字符集作为参数传递格式
+  */
+
+//固定写入内容
+syntax = "v2"
+
+//Java Code生成没有做任何处理
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+//服务总名
+svname <- "com.sgcc.demo.front"
+
+//子项目名，Front中也被识别成文件创建路径
+subsvname <- "demo"
+
+//BO的注释方法1，注意必须使用name
+@type (
+    name: "测试请求AO"
+)
+type RequestAO struct {
+    Name string `desc:"姓名", code:"kkkName"` //desc：内容将作为Java代码中swagger中的注释使用，code：内容为标准编码类型用作查询内容的标准编码转换，当然只在VO里起作用
+    Number string `desc:"数字", path:""`
+}
+
+//BO的注释方法2
+@type ("测试响应VO")  //这里的"("与")"可有可无，但是他们必须一起出现或一起消失
+type ResponseVO struct {
+    Message string `json:"message",code:"kkkName"`  
+}
+
+@server(
+    group: greet/s1 //路由组
+    desc: service测试1  //用作swagger中的API注释
+)
+service Aapi { //目前只支持同一个service名，即这里的Aapi，可以有多个不同service块使用同一名字，但是不允许出现不同名字
+    @server(
+        handler: greetHandler  //定义方法名方式1
+    )
+    get /greet/from([]RequestAO) returns ([]ResponseVO) //入参与出参支持基本类型(当然是Go的),自定义结构体和切片，不支持map。由于使用feign调用，不支持使用路由传参，post方式只支持使用使用Json
+
+    @handler noResponseHandler  //定义方法名方式2
+    @desc 测试接口注释  //接口注释，注意不要写到定义方法名方式1中，这是唯一的写法
+    get /greet/get(RequestAO)  //没有响应体的写法，但在实际的代码生成中仍然会返回ResponseResult<String>
+
+    @handler noResponseHandler222
+    get /greet222/get returns (ResponseVO) //没有请求参数的写法
+
+    @handler createBalance
+    post /createBalance(RequestAO) returns (ResponseVO)
+
+    @handler updateBalance
+    post /updateBalance(RequestAO)
+}
+
+@server(
+    desc: service测试2
+    group: cccccc
+)
+service Aapi{  
+    @server(
+        handler: testB
+    )
+    get /testB(RequestAO) returns (ResponseVO)
+}
+
