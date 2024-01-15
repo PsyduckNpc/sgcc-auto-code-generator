@@ -39,6 +39,12 @@
         "branch": "{{.global.branch}}",
         "style": "{{.global.style}}"
       },
+      "java": {
+        "short": "Generate java files for provided api in api file",
+        "dir": "{{.goctl.api.dir}}",
+        "api": "{{.goctl.api.api}}",
+        "type": "Generator java code type, front or subdomain"
+      },
       "new": {
         "short": "Fast create api service",
         "Example": "goctl api new [options] service-name",

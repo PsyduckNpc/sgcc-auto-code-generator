@@ -15,7 +15,7 @@ import (
 //go:embed subdomaintpl/DomainServiceImpl.tpl
 var domainServiceImplTemplate string
 
-func GenDomainServiceImpl(dir, svName, subSvName string, api *spec.ApiSpec, ch chan bool) error {
+func GenDomainServiceImpl(dir, svName, subSvName string, api *spec.ApiSpec, ch chan bool, constants *map[string]javagenutil.Logic) error {
 
 	defer func() { ch <- true }()
 
@@ -52,17 +52,23 @@ func GenDomainServiceImpl(dir, svName, subSvName string, api *spec.ApiSpec, ch c
 			}
 		}
 
+		primaryKey := javagenutil.HeadUpCase(primary.Name)
+		primaryKeySQL := func() string {
+			if id != "" {
+				return id
+			} else {
+				toSQLConverter := javagenutil.ParamToSQLConverter([]string{strings.TrimLeft(v.MiddleType.Name(), "[]"), primary.Name})
+				return toSQLConverter[0] + "_" + toSQLConverter[1]
+			}
+		}()
+		if constants != nil && (*constants)[root.Group].PrimaryKeySQL == "" {
+			(*constants)[root.Group] = javagenutil.Logic{PrimaryKey: primaryKey, PrimaryKeySQL: primaryKeySQL, TableSQL: javagenutil.ParamToSQLConverter([]string{root.Group})[0]}
+		}
+
 		logics = append(logics, javagenutil.Logic{
-			Operate:    subdomain.GetOperate(v.Handler),
-			PrimaryKey: javagenutil.HeadUpCase(primary.Name),
-			PrimaryKeySQL: func() string {
-				if id != "" {
-					return id
-				} else {
-					toSQLConverter := javagenutil.ParaToSQLConverter([]string{strings.TrimLeft(v.MiddleType.Name(), "[]"), primary.Name})
-					return toSQLConverter[0] + "_" + toSQLConverter[1]
-				}
-			}(),
+			Operate:       subdomain.GetOperate(v.Handler),
+			PrimaryKey:    primaryKey,
+			PrimaryKeySQL: primaryKeySQL,
 			InterfaceName: v.Handler,
 			DTOType:       reqType,
 			DTOName:       reqName,

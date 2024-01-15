@@ -42,6 +42,7 @@ type Logic struct {
 
 	Operate       string
 	RootType      string
+	TableSQL      string
 	PrimaryKeySQL string
 	PrimaryKey    string
 }

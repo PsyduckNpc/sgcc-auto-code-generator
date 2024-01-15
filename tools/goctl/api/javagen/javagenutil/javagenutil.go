@@ -258,7 +258,7 @@ func FormatSource(source string) string {
 	return builder.String()
 }
 
-func ParaToSQLConverter(fields []string) []string {
+func ParamToSQLConverter(fields []string) []string {
 	if fields == nil || len(fields) == 0 {
 		return make([]string, 0)
 	}

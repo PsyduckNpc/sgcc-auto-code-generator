@@ -42,8 +42,8 @@ var (
 
 // Execute executes the given command
 func Execute() {
-	os.Args = supportGoStdFlag(os.Args) //参数进行解析
-	if err := rootCmd.Execute(); err != nil {
+	os.Args = supportGoStdFlag(os.Args)       //参数进行解析，将参数转换为goctl可解析的参数类型
+	if err := rootCmd.Execute(); err != nil { //命令行执行
 		fmt.Println(aurora.Red(err.Error()))
 		os.Exit(codeFailure)
 	}
@@ -65,6 +65,7 @@ func supportGoStdFlag(args []string) []string {
 			continue
 		}
 
+		//解析出每个参数的k， v
 		flagExpr := strings.TrimPrefix(arg, doubleDash)
 		flagExpr = strings.TrimPrefix(flagExpr, dash)
 		flagName, flagValue := flagExpr, ""
@@ -74,13 +75,13 @@ func supportGoStdFlag(args []string) []string {
 			flagValue = flagExpr[assignIndex:]
 		}
 
-		if !isBuiltin(flagName) {
+		if !isBuiltin(flagName) { //判断参数不是help或者version
 			// The method Flag can only match the user custom flags.
 			f := parentCmd.Flag(flagName)
 			if f == nil {
 				continue
 			}
-			if f.Shorthand == flagName {
+			if f.Shorthand == flagName { //短名
 				continue
 			}
 		}

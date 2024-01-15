@@ -34,7 +34,7 @@ type RequestDTO struct {
 //BO的注释方法2
 @type ("测试响应ROOT")  //这里的"("与")"可有可无，但是他们必须一起出现或一起消失
 type ResponseROOT struct {
-    Message string `json:"message",code:"kkkName",primary`  
+    Message string `json:"message",code:"kkkName",primary`  //生成的redis标识规则为 "[type名去掉BO后缀]:[type名+字段名共同转SQL类型]"
 }
 
 @server(

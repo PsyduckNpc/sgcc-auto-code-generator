@@ -21,15 +21,17 @@ var (
 	VarStringDir string
 	// VarStringAPI describes an API.
 	VarStringAPI string
+
+	//生成的类型，front或者subdomain
+	VarStringType string
 )
 
 // JavaCommand generates java code command entrance.
 func JavaCommand(_ *cobra.Command, _ []string) error {
-	//apiFile := VarStringAPI
-	//apiFile := "C:/Users/Psydu/Desktop/greet2.api"
-	apiFile := "../../../../attachment/greet2.api"
-	//dir := VarStringDir
-	dir := "C:/Users/Psydu/Desktop"
+	apiFile := VarStringAPI
+	//apiFile := "../../../../attachment/greet2.api"
+	dir := VarStringDir
+	//dir := "C:/Users/Psydu/Desktop"
 	if len(apiFile) == 0 {
 		return errors.New("missing -api")
 	}
@@ -66,8 +68,13 @@ func JavaCommand(_ *cobra.Command, _ []string) error {
 	FillMissBo(api)
 	//importPathPadding(api, packetName)
 
-	//genFront(dir, svName, subSvName, api)
-	genSubdomain(dir, svName, subSvName, api)
+	if strings.Contains(strings.ToUpper(VarStringType), "FRONT") {
+		genFront(dir, svName, subSvName, api)
+	} else if strings.Contains(strings.ToUpper(VarStringType), "SUBDOMAIN") {
+		genSubdomain(dir, svName, subSvName, api)
+	} else {
+		return errors.New("typ is nil or not support")
+	}
 
 	fmt.Println(aurora.Green("Done."))
 	return nil
@@ -96,19 +103,23 @@ func genFront(dir, svName, subSvName string, api *spec.ApiSpec) {
 func genSubdomain(dir, svName, subSvName string, api *spec.ApiSpec) {
 	size := 7
 	ch := make(chan bool, size)
+	constants := make(map[string]javagenutil.Logic)
 
-	go logx.Must(gensubdomain.GenModel(dir, svName, subSvName, api, ch))
-	go logx.Must(gensubdomain.GenRemoteService(dir, svName, subSvName, api, ch))
-	go logx.Must(gensubdomain.GenRemoteServiceImpl(dir, svName, subSvName, api, ch))
-	go logx.Must(gensubdomain.GenDomainService(dir, svName, subSvName, api, ch))
-	go logx.Must(gensubdomain.GenDomainServiceImpl(dir, svName, subSvName, api, ch))
-	go logx.Must(gensubdomain.GenSpi(dir, svName, subSvName, api, ch))
-	go logx.Must(gensubdomain.GenController(dir, svName, subSvName, api, ch))
-	//go logx.Must(gensubdomain.GenConstant(dir, svName, subSvName, api, ch))
+	go logx.Must(gensubdomain.GenModel(dir, svName, subSvName, api, ch, &constants))
+	go logx.Must(gensubdomain.GenRemoteService(dir, svName, subSvName, api, ch, &constants))
+	go logx.Must(gensubdomain.GenRemoteServiceImpl(dir, svName, subSvName, api, ch, &constants))
+	go logx.Must(gensubdomain.GenDomainService(dir, svName, subSvName, api, ch, &constants))
+	go logx.Must(gensubdomain.GenDomainServiceImpl(dir, svName, subSvName, api, ch, &constants))
+	go logx.Must(gensubdomain.GenSpi(dir, svName, subSvName, api, ch, &constants))
+	go logx.Must(gensubdomain.GenController(dir, svName, subSvName, api, ch, &constants))
 
 	for i := 0; i < size; i++ {
 		<-ch
 	}
+
+	ch = make(chan bool, 1)
+	go logx.Must(gensubdomain.GenConstant(dir, svName, subSvName, api, ch, &constants))
+	<-ch
 }
 
 func FillMissBo(api *spec.ApiSpec) {

@@ -14,7 +14,7 @@ import (
 //go:embed subdomaintpl/DomainService.tpl
 var domainServiceTemplate string
 
-func GenDomainService(dir, svName, subSvName string, api *spec.ApiSpec, ch chan bool) error {
+func GenDomainService(dir, svName, subSvName string, api *spec.ApiSpec, ch chan bool, constants *map[string]javagenutil.Logic) error {
 
 	defer func() { ch <- true }()
 	var imports string

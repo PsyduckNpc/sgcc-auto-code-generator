@@ -16,7 +16,7 @@ var dtoTemplate string
 //go:embed subdomaintpl/ROOT.tpl
 var rootTemplate string
 
-func GenModel(dir, svName, subSvName string, api *spec.ApiSpec, ch chan bool) error {
+func GenModel(dir, svName, subSvName string, api *spec.ApiSpec, ch chan bool, constants *map[string]javagenutil.Logic) error {
 	defer func() { ch <- true }()
 	for _, t := range api.Types {
 		if err := typeCreateWith(dir, t, svName, subSvName); err != nil {

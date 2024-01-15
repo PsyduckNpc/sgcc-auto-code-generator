@@ -14,7 +14,7 @@ import (
 //go:embed subdomaintpl/RemoteServiceImpl.tpl
 var remoteServiceImplTemplate string
 
-func GenRemoteServiceImpl(dir, svName, subSvName string, api *spec.ApiSpec, ch chan bool) error {
+func GenRemoteServiceImpl(dir, svName, subSvName string, api *spec.ApiSpec, ch chan bool, constants *map[string]javagenutil.Logic) error {
 
 	defer func() { ch <- true }()
 	var imports string

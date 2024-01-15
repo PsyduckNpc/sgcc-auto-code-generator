@@ -74,7 +74,7 @@ func setTestData(t *testing.T, data []byte) {
 
 func (f *Flags) Get(key string) (string, error) {
 	value := f.loader.GetString(key)
-	for util.IsTemplateVariable(value) {
+	for util.IsTemplateVariable(value) { //如果是模板变量
 		value = util.TemplateVariable(value)
 		if value == key {
 			return "", fmt.Errorf("the variable can not be self: %q", key)

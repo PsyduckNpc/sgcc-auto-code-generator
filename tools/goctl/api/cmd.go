@@ -27,10 +27,11 @@ var (
 	newCmd    = cobrax.NewCommand("new", cobrax.WithRunE(new.CreateServiceCommand),
 		cobrax.WithArgs(cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs)))
 	validateCmd = cobrax.NewCommand("validate", cobrax.WithRunE(validate.GoValidateApi))
-	javaCmd     = cobrax.NewCommand("java", cobrax.WithRunE(javagen.JavaCommand), cobrax.WithHidden())
-	ktCmd       = cobrax.NewCommand("kt", cobrax.WithRunE(ktgen.KtCommand))
-	pluginCmd   = cobrax.NewCommand("plugin", cobrax.WithRunE(plugin.PluginCommand))
-	tsCmd       = cobrax.NewCommand("ts", cobrax.WithRunE(tsgen.TsCommand))
+	//javaCmd     = cobrax.NewCommand("java", cobrax.WithRunE(javagen.JavaCommand), cobrax.WithHidden())
+	javaCmd   = cobrax.NewCommand("java", cobrax.WithRunE(javagen.JavaCommand))
+	ktCmd     = cobrax.NewCommand("kt", cobrax.WithRunE(ktgen.KtCommand))
+	pluginCmd = cobrax.NewCommand("plugin", cobrax.WithRunE(plugin.PluginCommand))
+	tsCmd     = cobrax.NewCommand("ts", cobrax.WithRunE(tsgen.TsCommand))
 )
 
 func init() {
@@ -76,6 +77,7 @@ func init() {
 
 	javaCmdFlags.StringVar(&javagen.VarStringDir, "dir")
 	javaCmdFlags.StringVar(&javagen.VarStringAPI, "api")
+	javaCmdFlags.StringVar(&javagen.VarStringType, "type")
 
 	ktCmdFlags.StringVar(&ktgen.VarStringDir, "dir")
 	ktCmdFlags.StringVar(&ktgen.VarStringAPI, "api")
