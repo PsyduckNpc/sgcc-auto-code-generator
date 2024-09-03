@@ -23,7 +23,7 @@ var (
 	VarStringAPI string
 
 	//生成的类型，front或者subdomain
-	VarStringType string
+	VarServerType string
 )
 
 // JavaCommand generates java code command entrance.
@@ -31,7 +31,7 @@ func JavaCommand(_ *cobra.Command, _ []string) error {
 	apiFile := VarStringAPI
 	//apiFile := "../../../../attachment/greet2.api"
 	dir := VarStringDir
-	//dir := "C:/Users/Psydu/Desktop"
+	//dir := "C:/Users/Psydu/Desktop/GoctlGen"
 	if len(apiFile) == 0 {
 		return errors.New("missing -api")
 	}
@@ -66,14 +66,15 @@ func JavaCommand(_ *cobra.Command, _ []string) error {
 	//logx.Must(genComponents(dir, packetName, api)) //生成组件
 
 	FillMissBo(api)
-	//importPathPadding(api, packetName)
+	//importPathPadding(api, packetName
 
-	if strings.Contains(strings.ToUpper(VarStringType), "FRONT") {
+	//VarStringType = "SUBDOMAIN"
+	if strings.Contains(strings.ToUpper(VarServerType), "FRONT") {
 		genFront(dir, svName, subSvName, api)
-	} else if strings.Contains(strings.ToUpper(VarStringType), "SUBDOMAIN") {
+	} else if strings.Contains(strings.ToUpper(VarServerType), "SUBDOMAIN") {
 		genSubdomain(dir, svName, subSvName, api)
 	} else {
-		return errors.New("typ is nil or not support")
+		return errors.New("type is nil or not support")
 	}
 
 	fmt.Println(aurora.Green("Done."))

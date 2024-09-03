@@ -129,6 +129,18 @@ func (p parser) fillSvComm() {
 }
 
 func (p parser) fillTypes() error {
+
+	var boType = ""
+	for i, comm := range p.spec.SvComm {
+		if p.spec.SvComm[i].Key == "svname" {
+			value := strings.TrimSpace(comm.Value)
+			boType = value[strings.LastIndex(strings.TrimSpace(comm.Value), ".")+1:]
+		}
+
+	}
+	if !(strings.ToUpper(boType) == "FRONT" || strings.ToUpper(boType) == "SUBDOMAIN") {
+		return fmt.Errorf("\"svname\" must end in front or subdomain.")
+	}
 	for _, item := range p.ast.Type {
 		switch v := item.(type) {
 		case *ast.TypeStruct:
@@ -176,7 +188,7 @@ func (p parser) fillTypes() error {
 					if err != nil {
 						panic(err)
 					}
-					return javagenutil.AssembleBoImport(svName.Value, subSvComm.Value, v.Name.Text(), "subdomain")
+					return javagenutil.AssembleBoImport(svName.Value, subSvComm.Value, v.Name.Text(), strings.ToLower(boType))
 				}(),
 				Desc: func() string {
 					if v.AtType.LineDoc != nil {

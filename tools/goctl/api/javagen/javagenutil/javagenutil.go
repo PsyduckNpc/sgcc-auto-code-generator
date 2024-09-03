@@ -129,7 +129,7 @@ func AssembleBoImport(projName, subProjName, comporent, boType string) string {
 	if boType == "subdomain" {
 		str := "import " + strings.ToLower(projName)
 		if strings.HasSuffix(comporent, "DTO") || strings.HasSuffix(comporent, "Dto") {
-			return str + ".application.dto" + comporent + ";\n"
+			return str + ".application.dto." + comporent + ";\n"
 		}
 		if strings.HasSuffix(comporent, "ROOT") || strings.HasSuffix(comporent, "Root") {
 			return str + ".domain." + subProjName + "context.beanclass." + comporent + ";\n"

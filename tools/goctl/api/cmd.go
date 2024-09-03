@@ -77,7 +77,7 @@ func init() {
 
 	javaCmdFlags.StringVar(&javagen.VarStringDir, "dir")
 	javaCmdFlags.StringVar(&javagen.VarStringAPI, "api")
-	javaCmdFlags.StringVar(&javagen.VarStringType, "type")
+	javaCmdFlags.StringVar(&javagen.VarServerType, "type")
 
 	ktCmdFlags.StringVar(&ktgen.VarStringDir, "dir")
 	ktCmdFlags.StringVar(&ktgen.VarStringAPI, "api")

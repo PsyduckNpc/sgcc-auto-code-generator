@@ -11,7 +11,7 @@ func AssembleRemoteService(svName, subSvName string, importMap *map[string]strin
 	}
 	serviceName := javagenutil.HeadUpCase(subSvName) + "RemoteService"
 	if importMap != nil && (*importMap)[serviceName] == "" {
-		(*importMap)[serviceName] = "import " + svName + "." + subSvName + ".remote.severtransfer." + "." + serviceName + ";\n"
+		(*importMap)[serviceName] = "import " + svName + "." + subSvName + ".remote.severtransfer." + serviceName + ";\n"
 	}
 	return serviceName
 }
